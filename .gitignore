@@ -51,3 +51,6 @@ supabase/.temp/
 
 # Deno lockfile (not used; Next.js / pnpm project)
 deno.lock
+
+# Curation work-log (per-row skipped during WebSearch verification)
+data/.curated-skipped.txt

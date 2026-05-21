@@ -1,0 +1,22 @@
+Food_Item,Category,CO2_eq_per_kg,Standard_Deviation,LCA_Boundary,Geographic_Scope,Data_Source,Data_Quality,Source_URL
+Paddy rice (India farm-gate),Cereals,5.65,,Cradle-to-farm-gate,India,"Vetter et al. 2017 (PMC5268357) Table 1",high,https://pmc.ncbi.nlm.nih.gov/articles/PMC5268357/
+Mutton (India farm-gate),Meat,45.54,,Cradle-to-farm-gate,India,"Vetter et al. 2017 (PMC5268357) Table 1",high,https://pmc.ncbi.nlm.nih.gov/articles/PMC5268357/
+Cow milk (India farm-gate),Dairy,2.4,,Cradle-to-farm-gate,India,"Vetter et al. 2017 (PMC5268357) Table 1",high,https://pmc.ncbi.nlm.nih.gov/articles/PMC5268357/
+Wheat (India farm-gate),Cereals,0.34,,Cradle-to-farm-gate,India,"Vetter et al. 2017 (PMC5268357) Table 1",high,https://pmc.ncbi.nlm.nih.gov/articles/PMC5268357/
+Potato (India farm-gate),Vegetables,0.22,,Cradle-to-farm-gate,India,"Vetter et al. 2017 (PMC5268357) Table 1",high,https://pmc.ncbi.nlm.nih.gov/articles/PMC5268357/
+Peas (India farm-gate),Pulses,0.42,,Cradle-to-farm-gate,India,"Vetter et al. 2017 (PMC5268357) Table 1",high,https://pmc.ncbi.nlm.nih.gov/articles/PMC5268357/
+Lentil (India farm-gate),Pulses,0.38,,Cradle-to-farm-gate,India,"Vetter et al. 2017 (PMC5268357) Table 1",high,https://pmc.ncbi.nlm.nih.gov/articles/PMC5268357/
+Groundnut (India farm-gate),Nuts and oils,0.38,,Cradle-to-farm-gate,India,"Vetter et al. 2017 (PMC5268357) Table 1",high,https://pmc.ncbi.nlm.nih.gov/articles/PMC5268357/
+Sugarcane (India farm-gate),Sweeteners,0.09,,Cradle-to-farm-gate,India,"Vetter et al. 2017 (PMC5268357) Table 1",high,https://pmc.ncbi.nlm.nih.gov/articles/PMC5268357/
+Onion (India farm-gate),Vegetables,0.10,,Cradle-to-farm-gate,India,"Vetter et al. 2017 (PMC5268357) Table 1",high,https://pmc.ncbi.nlm.nih.gov/articles/PMC5268357/
+Mango (India farm-gate),Fruit,0.16,,Cradle-to-farm-gate,India,"Vetter et al. 2017 (PMC5268357) Table 1",high,https://pmc.ncbi.nlm.nih.gov/articles/PMC5268357/
+Tomato (India farm-gate),Vegetables,0.15,,Cradle-to-farm-gate,India,"Vetter et al. 2017 (PMC5268357) Table 1",high,https://pmc.ncbi.nlm.nih.gov/articles/PMC5268357/
+Orange (India farm-gate),Fruit,0.13,,Cradle-to-farm-gate,India,"Vetter et al. 2017 (PMC5268357) Table 1",high,https://pmc.ncbi.nlm.nih.gov/articles/PMC5268357/
+Spinach (India farm-gate),Vegetables,0.05,,Cradle-to-farm-gate,India,"Vetter et al. 2017 (PMC5268357) Table 1",high,https://pmc.ncbi.nlm.nih.gov/articles/PMC5268357/
+Cumin seed (India farm-gate),Spices,0.75,,Cradle-to-farm-gate,India,"Vetter et al. 2017 (PMC5268357) Table 1",high,https://pmc.ncbi.nlm.nih.gov/articles/PMC5268357/
+Other cereals (India farm-gate),Cereals,0.43,,Cradle-to-farm-gate,India,"Vetter et al. 2017 (PMC5268357) Table 1",high,https://pmc.ncbi.nlm.nih.gov/articles/PMC5268357/
+Other pulses (India farm-gate),Pulses,0.75,,Cradle-to-farm-gate,India,"Vetter et al. 2017 (PMC5268357) Table 1",high,https://pmc.ncbi.nlm.nih.gov/articles/PMC5268357/
+Vegetable oil crops (India farm-gate),Nuts and oils,0.54,,Cradle-to-farm-gate,India,"Vetter et al. 2017 (PMC5268357) Table 1",high,https://pmc.ncbi.nlm.nih.gov/articles/PMC5268357/
+Mutton intensive (Rajasthan),Meat,2.47,,Gate-to-gate,India,"Bandyopadhyay et al. 2024 PMC10826930",high,https://pmc.ncbi.nlm.nih.gov/articles/PMC10826930/
+Mutton semi-intensive (Rajasthan),Meat,1.88,,Gate-to-gate,India,"Bandyopadhyay et al. 2024 PMC10826930",high,https://pmc.ncbi.nlm.nih.gov/articles/PMC10826930/
+Mutton extensive (Rajasthan),Meat,1.16,,Gate-to-gate,India,"Bandyopadhyay et al. 2024 PMC10826930",high,https://pmc.ncbi.nlm.nih.gov/articles/PMC10826930/

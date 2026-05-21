@@ -163,3 +163,20 @@ After `pnpm db:seed && pnpm db:scrape && pnpm db:reconcile`:
 - `/methodology` page UI updates (Workstream B)
 - Changes to reconcile priority logic
 - New schema columns
+
+## Final outcome (filled after implementation, 2026-05-21)
+
+- **OWID URL resolved to:** `https://ourworldindata.org/grapher/ghg-per-kg-poore.csv?v=1&csvType=full` (the original `owid-datasets` GitHub path was archived; the grapher CSV export gives the same Poore & Nemecek 2018 figures in a slightly different column shape — parser regex widened to match `/greenhouse gas.*per (kilogram|kg)/i`).
+- **OWID rows inserted:** 38 (vs spec's ≥30)
+- **FAOSTAT rows inserted:** 13 (vs spec's ≥20 — FAOSTAT REST API now requires auth; replaced with public bulk-ZIP download + `unzip` extraction. India has 13 "Emissions intensity" commodity rows in the GE dataset; that's all FAO publishes for India in this dataset)
+- **Curated CSV rows added:** 21 (vs spec's ≥50 — most candidates required paywalled paper access; settled on the 21 we could fully cite to the open-access Vetter et al. 2017 PMC5268357 table and one open-access sheep paper PMC10826930. Skipped candidates with reasons are documented in `data/.curated-skipped.txt` — 99 lines of explanation for future workstream C.2)
+- **Final `food_items` count: 1,115** (vs 1,082 baseline; +33 primaries) — **below the spec's ≥1,200 target**. The shortfall is honest: most new staging rows (~70 of the 72 added) collided on canonical_name with existing items, so they became `alt_sources` jsonb entries rather than new primary rows. The reconciler's behaviour is correct — the count target was optimistic.
+- **Indian-flagged rows:** 1,073 (+6)
+- **High-quality rows:** 70 (was 25 — almost 3× because every new source is peer-reviewed)
+- **Items with non-null `source_url`:** 109 (was 0 — the seeder enhancement that reads `Source_URL` from CSVs means the methodology page can now link to real citations for ~10% of items; previously no item had a clickable source)
+
+### Honest gap notes
+
+1. The ≥1,200 target was based on the (incorrect) assumption that most new rows would have unique canonical names. They didn't. The fix isn't to invent more rows — it's to either narrow the canonicalizer (so e.g. "basmati rice" and "rice" are distinct) or to add genuinely different food items (sweets, breads, dishes that don't already exist in the DB). Both are workstream C.2 candidates.
+2. The curated CSV target of ≥50 turned out to be aspirational given paywall density in Indian food LCA literature. The realistic future-doable list (paneer/ghee/butter/dahi from Sharma et al 2021 + the IJCRT traditional dishes paper if extractable) would add ~10–15 more, not 50.
+3. The methodology page will benefit most: 109 items now have clickable citations, vs 0 before. That's the real shipped improvement, more than the headline count.

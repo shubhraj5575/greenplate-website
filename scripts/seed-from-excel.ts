@@ -16,12 +16,20 @@
 
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { fileURLToPath } from "node:url";
 import * as XLSX from "xlsx";
 import Papa from "papaparse";
 import { admin } from "./lib/admin-client.js";
 import { canonicalize, mapDataQuality, isIndian } from "./lib/canonical.js";
 
 const DATA_DIR = "/Users/shubhraj/Downloads/greenplate-main/data";
+// Repo-local data directory: greenplate-website/data/ (sibling of scripts/).
+// Used for files versioned with the codebase (e.g. curated supplemental CSVs).
+const REPO_DATA_DIR = path.join(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "..",
+  "data",
+);
 
 interface StagingRow {
   raw_name: string;
@@ -96,7 +104,7 @@ function rowFromUniformCsv(
     lca_boundary: (r.LCA_Boundary as string) ?? null,
     geographic_scope: (r.Geographic_Scope as string) ?? null,
     data_source: `${sourceLabel} — ${String(r.Data_Source ?? "").trim() || "unknown"}`,
-    source_url: null,
+    source_url: String(r.Source_URL ?? "").trim() || null,
     data_quality: mapDataQuality(r.Data_Quality as string),
     is_indian: isIndian(r.Geographic_Scope as string),
     raw_payload: r,
@@ -254,6 +262,26 @@ async function main() {
   );
   allStaging.push(...luxStaging);
   console.log(`  + ${luxStaging.length} staging rows · ${luxMenu.length} menu refs`);
+
+  // 6. Curated supplemental Indian foods — repo-local, hand-verified rows
+  //    with primary citations in Source_URL. Optional: if the file is
+  //    absent or has only a header, this contributes 0 rows.
+  const curatedPath = path.join(REPO_DATA_DIR, "curated_indian_supplemental.csv");
+  if (fs.existsSync(curatedPath)) {
+    console.log("Reading curated_indian_supplemental.csv …");
+    const csvCurated = readCsv(curatedPath);
+    let added = 0;
+    for (const r of csvCurated) {
+      const row = rowFromUniformCsv(r, "curated_indian_supplemental");
+      if (row) {
+        allStaging.push(row);
+        added++;
+      }
+    }
+    console.log(`  + ${csvCurated.length} raw rows (${added} accepted)`);
+  } else {
+    console.log("(no curated_indian_supplemental.csv — skipping)");
+  }
 
   console.log(`\nTotal staging rows queued: ${allStaging.length}\n`);
 
