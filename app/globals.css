@@ -1,26 +1,81 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --font-sans: var(--font-inter), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+
+  --color-forest-50: #e9f0ec;
+  --color-forest-100: #c7d7cc;
+  --color-forest-200: #9fbaa8;
+  --color-forest-300: #6b8f77;
+  --color-forest-500: #3f6d52;
+  --color-forest-700: #2f5c46;
+  --color-forest-900: #1f3a2e;
+  --color-forest-950: #0f1f17;
+
+  --color-cream-50: #faf6ee;
+  --color-cream-100: #f2ebdb;
+  --color-cream-200: #e8dec7;
+
+  --color-bone-100: #f2ebdb;
+
+  --color-ink-900: #0f1a14;
+  --color-ink-700: #1f2a24;
+  --color-ink-500: #475d54;
+  --color-ink-400: #6b7d75;
+  --color-ink-300: #8fa39a;
+
+  --color-amber-400: #f59e0b;
+  --color-amber-500: #d97706;
+  --color-amber-600: #b45309;
+
+  --color-leaf-500: #84a98c;
+
+  --color-success: #2f5c46;
+  --color-warning: #d97706;
+  --color-danger: #b1372a;
+
+  --radius-card: 1rem;
+  --radius-pill: 9999px;
+
+  --shadow-soft:
+    0 1px 2px rgba(15, 26, 20, 0.04), 0 8px 24px -12px rgba(15, 26, 20, 0.08);
+  --shadow-card:
+    0 1px 2px rgba(15, 26, 20, 0.04), 0 12px 32px -16px rgba(15, 26, 20, 0.12);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  html,
+  body {
+    height: 100%;
+  }
+  body {
+    background: var(--color-cream-50);
+    color: var(--color-ink-900);
+    font-family: var(--font-sans);
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1,
+      "ss01" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-feature-settings: "ss01" 1;
+    letter-spacing: -0.01em;
+  }
+  ::selection {
+    background: var(--color-forest-700);
+    color: var(--color-cream-50);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@utility tabular {
+  font-variant-numeric: tabular-nums;
 }

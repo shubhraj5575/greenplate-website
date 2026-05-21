@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# GreenPlate v2
 
-## Getting Started
+Carbon footprint measurement for India's food sector. Two journeys (individual + food-service organization), real LCA data, no greenwashing.
 
-First, run the development server:
+## Stack
+
+- **Next.js 16** (App Router) + **React 19** + **TypeScript**
+- **Tailwind CSS v4** (CSS-first design tokens in `app/globals.css`)
+- **Supabase** — Postgres + Auth (Google OAuth) + RLS — project `qbslqlmmslaetylafxup`
+- **Fonts:** Inter (UI) + Fraunces (display) via `next/font`
+- **Charts:** Recharts
+- **Forms:** React Hook Form + Zod
+- **Testing:** Vitest
+
+## Local development
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cp .env.example .env.local      # fill in Supabase keys
+pnpm install
+pnpm dev                        # http://localhost:3000
+pnpm test                       # vitest
+pnpm typecheck
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Project layout
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+app/
+  (marketing)/    # public — landing, methodology, blog, about
+  (auth)/         # login + onboarding
+  (app)/          # auth-gated — dashboard, calculate, org/*, history, settings
+  api/auth/callback/route.ts
+components/
+  ui/             # primitives
+  marketing/      # hero, feature grid, footer
+  calc/           # wizard steps, summary cards
+  dashboard/      # charts, KPIs
+lib/
+  supabase/       # browser + server clients, middleware
+  calc/           # pure calculation engines (individual, organization)
+  equivalents.ts  # trees, car km, etc.
+  india-benchmarks.ts
+content/blog/     # MDX posts
+scripts/          # seed + scrape data
+supabase/migrations/
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Methodology
 
-## Learn More
+Every emission factor cites a source on `/methodology`. See `lib/calc/factors.ts` for the canonical reference. India-specific factors (CEA grid, ICAT transport, PNGRB gas) take precedence over global defaults where available.
 
-To learn more about Next.js, take a look at the following resources:
+## Phases
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+This codebase is built in phases (see project root `GreenPlate v2 — Build Plan`):
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Phase 0 — foundation (this commit)
+- Phase 1 — DB schema, seed scripts, scrapers
+- Phase 2 — auth (Google OAuth)
+- Phase 3 — marketing pages
+- Phase 4 — individual calculator
+- Phase 5 — org calculator + menu analyzer
+- Phase 6 — dashboards + history + settings
+- Phase 7 — polish + deploy (Netlify)
