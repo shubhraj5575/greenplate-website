@@ -4,9 +4,14 @@
 -- All tables: created_at, updated_at, RLS enabled.
 -- =========================================================
 
-create extension if not exists "pgcrypto";
-create extension if not exists "citext";
-create extension if not exists "unaccent";
+create extension if not exists "pgcrypto" with schema extensions;
+create extension if not exists "citext" with schema extensions;
+create extension if not exists "unaccent" with schema extensions;
+create extension if not exists "pg_trgm" with schema extensions;
+
+-- Ensure extension types/opclasses (citext, gin_trgm_ops) resolve without
+-- schema qualification throughout this migration.
+set local search_path = public, extensions;
 
 -- ----------------------------- enums -----------------------------
 
@@ -127,10 +132,7 @@ create index idx_food_canonical on public.food_items(canonical_name);
 create index idx_food_category on public.food_items(category);
 create index idx_food_is_indian on public.food_items(is_indian) where active;
 create index idx_food_name_trgm on public.food_items
-  using gin (lower(display_name) gin_trgm_ops);
-
--- enable pg_trgm for autocomplete search
-create extension if not exists "pg_trgm";
+  using gin (lower(display_name) extensions.gin_trgm_ops);
 
 create trigger trg_food_updated before update on public.food_items
   for each row execute procedure public.set_updated_at();
@@ -173,7 +175,7 @@ create table public.reference_menu_items (
   created_at timestamptz not null default now()
 );
 create index idx_refmenu_name on public.reference_menu_items
-  using gin (lower(name) gin_trgm_ops);
+  using gin (lower(name) extensions.gin_trgm_ops);
 
 -- ----------------------------- calculations -----------------------------
 
