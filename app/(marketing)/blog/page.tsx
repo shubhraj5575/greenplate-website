@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export const metadata = { title: "Blog" };
 
-const POSTS = [
+export const POSTS = [
   {
     slug: "why-food-carbon-matters-india",
     title: "Why food carbon matters in India",

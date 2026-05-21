@@ -11,6 +11,10 @@ import {
 } from "lucide-react";
 import { HeroVisual } from "@/components/marketing/HeroVisual";
 import { FAQ } from "@/components/marketing/FAQ";
+import { RevealOnView } from "@/components/marketing/RevealOnView";
+import { CountUp } from "@/components/marketing/CountUp";
+import { ThaliPreview } from "@/components/marketing/ThaliPreview";
+import { JournalCards } from "@/components/marketing/JournalCards";
 
 const sources = [
   "Our World in Data",
@@ -169,6 +173,7 @@ export default function HomePage() {
         aria-label="Data sources"
         className="border-y border-ink-900/10 bg-cream-100/50"
       >
+        <RevealOnView>
         <div className="mx-auto max-w-7xl px-5 py-10 sm:px-8">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:gap-12">
             <p className="shrink-0 font-sans text-[0.7rem] font-semibold tracking-[0.22em] text-ink-500 uppercase">
@@ -186,6 +191,7 @@ export default function HomePage() {
             </ul>
           </div>
         </div>
+        </RevealOnView>
       </section>
 
       {/* ───────── Pillars ───────── */}
@@ -193,6 +199,7 @@ export default function HomePage() {
         aria-labelledby="pillars-title"
         className="mx-auto max-w-7xl px-5 py-24 sm:px-8 sm:py-32"
       >
+        <RevealOnView>
         <div className="flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-end">
           <div className="max-w-2xl">
             <SectionLabel index="01" title="What we built" />
@@ -212,13 +219,14 @@ export default function HomePage() {
             restaurant ledger.
           </p>
         </div>
+        </RevealOnView>
 
         <ul className="mt-14 grid gap-5 md:grid-cols-3">
           {pillars.map((p, i) => {
             const Icon = p.icon;
             return (
+              <RevealOnView key={p.title} delay={Math.min(i * 0.08, 0.16)}>
               <li
-                key={p.title}
                 className="group relative flex flex-col rounded-card border border-ink-900/8 bg-cream-50 p-7 transition-all duration-300 hover:-translate-y-0.5 hover:border-forest-900/20 hover:shadow-[var(--shadow-card)] sm:p-8"
               >
                 <div className="flex items-center justify-between">
@@ -253,6 +261,7 @@ export default function HomePage() {
                   ))}
                 </ul>
               </li>
+              </RevealOnView>
             );
           })}
         </ul>
@@ -263,6 +272,7 @@ export default function HomePage() {
         aria-labelledby="kpi-title"
         className="border-y border-ink-900/10 bg-cream-100/60"
       >
+        <RevealOnView>
         <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-24">
           <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
             <div className="max-w-xl">
@@ -297,7 +307,13 @@ export default function HomePage() {
                   {String(i + 1).padStart(2, "0")} / 04
                 </span>
                 <p className="tabular mt-10 font-display text-5xl leading-none tracking-tight text-forest-900 sm:text-[3.5rem]">
-                  {k.value}
+                  {i === 0 ? (
+                    <CountUp to={1500} suffix="+" />
+                  ) : i === 1 ? (
+                    <CountUp to={30} suffix="+" />
+                  ) : (
+                    k.value
+                  )}
                 </p>
                 <p className="mt-5 max-w-[26ch] text-sm leading-relaxed text-ink-500">
                   {k.label}
@@ -306,13 +322,18 @@ export default function HomePage() {
             ))}
           </ul>
         </div>
+        </RevealOnView>
       </section>
+
+      {/* ───────── Thali preview ───────── */}
+      <ThaliPreview />
 
       {/* ───────── How it works teaser ───────── */}
       <section
         aria-labelledby="how-title"
         className="mx-auto max-w-7xl px-5 py-24 sm:px-8 sm:py-32"
       >
+        <RevealOnView>
         <div className="flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-end">
           <div className="max-w-xl">
             <SectionLabel index="03" title="How it works" />
@@ -334,13 +355,14 @@ export default function HomePage() {
             <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
           </Link>
         </div>
+        </RevealOnView>
 
         <ol className="mt-14 grid gap-px overflow-hidden rounded-card border border-ink-900/10 bg-ink-900/10 md:grid-cols-3">
-          {steps.map((s) => {
+          {steps.map((s, i) => {
             const Icon = s.icon;
             return (
+              <RevealOnView key={s.n} delay={Math.min(i * 0.08, 0.16)}>
               <li
-                key={s.n}
                 className="relative flex flex-col gap-4 bg-cream-50 p-7 sm:p-8"
               >
                 <div className="flex items-center justify-between">
@@ -360,6 +382,7 @@ export default function HomePage() {
                   {s.body}
                 </p>
               </li>
+              </RevealOnView>
             );
           })}
         </ol>
@@ -376,6 +399,7 @@ export default function HomePage() {
         >
           <Grid />
         </div>
+        <RevealOnView>
         <div className="mx-auto grid max-w-7xl gap-10 px-5 py-20 sm:px-8 sm:py-24 lg:grid-cols-[1fr_1.4fr] lg:gap-16">
           <div>
             <SectionLabel index="04" title="The methodology" />
@@ -437,13 +461,18 @@ export default function HomePage() {
             </blockquote>
           </figure>
         </div>
+        </RevealOnView>
       </section>
+
+      {/* ───────── Journal ───────── */}
+      <JournalCards />
 
       {/* ───────── FAQ ───────── */}
       <section
         aria-labelledby="faq-title"
         className="mx-auto max-w-7xl px-5 py-24 sm:px-8 sm:py-32"
       >
+        <RevealOnView>
         <div className="grid gap-12 lg:grid-cols-[0.9fr_1.6fr] lg:gap-20">
           <div className="lg:sticky lg:top-28 lg:self-start">
             <SectionLabel index="05" title="Common questions" />
@@ -469,6 +498,7 @@ export default function HomePage() {
             <FAQ />
           </div>
         </div>
+        </RevealOnView>
       </section>
 
       {/* ───────── Final CTA ───────── */}
@@ -486,6 +516,7 @@ export default function HomePage() {
           <GridDark />
         </div>
 
+        <RevealOnView>
         <div className="mx-auto max-w-5xl px-5 py-24 text-center sm:px-8 sm:py-32">
           <p className="font-sans text-[0.7rem] tracking-[0.24em] text-cream-100/70 uppercase">
             Open beta · India
@@ -518,6 +549,7 @@ export default function HomePage() {
             </Link>
           </div>
         </div>
+        </RevealOnView>
       </section>
     </>
   );
