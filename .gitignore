@@ -45,3 +45,9 @@ next-env.d.ts
 # scraper cache (Phase 1)
 scripts/.cache/
 scripts/.scraped/
+
+# Supabase CLI working dir — contains pooler URL, project ref, version files
+supabase/.temp/
+
+# Deno lockfile (not used; Next.js / pnpm project)
+deno.lock
