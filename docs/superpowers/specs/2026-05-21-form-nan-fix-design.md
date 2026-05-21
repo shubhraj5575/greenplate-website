@@ -78,21 +78,14 @@ strings to `undefined` and otherwise to `Number(v)`:
 
 This means the form state holds `undefined` for empty fields, not `NaN`.
 
-### 2. `components/auth/OnboardingForm.tsx`
+### 2. ~~`components/auth/OnboardingForm.tsx`~~ — no change needed
 
-Refactor the three raw `<input type="number">` fields (household_size,
-employees, seats) to use the shared `NumberField`. This automatically
-inherits the fix and gives onboarding the same look/feel as the wizards.
-
-The form already manages state manually (no react-hook-form), so this
-involves wrapping the relevant inputs with a small adapter or — simpler —
-keeping the manual `<input>` but applying the same empty → undefined
-pattern in the change handler.
-
-**Decision:** keep the manual `<input>` for onboarding, but add an
-`emptyToUndefined` helper to `onChange` to mirror the NumberField fix.
-Rationale: switching to RHF-backed NumberField inside a non-RHF form
-would require a Provider just for three inputs. The helper is two lines.
+**Correction noted during implementation:** OnboardingForm uses a native
+HTML `<form action={...}>` with FormData and a server action, not React
+Hook Form. Its `<input type="number">` fields submit as raw strings to
+the server action (`completeOnboarding`). There is no `valueAsNumber`
+coercion path and therefore no NaN bug. The original spec was wrong on
+this point.
 
 ### 3. Schema messages (lib/calc/individual.ts, lib/calc/organization.ts)
 
@@ -112,10 +105,11 @@ field benefits from a custom message. Verify during implementation.
 ## Files touched
 
 1. `components/calc/inputs/Field.tsx` — `NumberField` register options.
-2. `components/auth/OnboardingForm.tsx` — `onChange` handlers on the three
-   number inputs.
+2. `lib/utils.ts` — new `emptyToNumberOrUndefined` helper (added during
+   implementation to make the fix unit-testable).
+3. `__tests__/utils.test.ts` — 11 unit tests for the helper (added).
 
-That's it. Two files.
+That's it. One product file + one new helper + its test.
 
 ## Success criteria
 
@@ -129,10 +123,12 @@ after deploy:
    not "Invalid input: expected number, received NaN".
 4. Click back into the field, type `0.9`. Tab away. Error disappears.
 5. Repeat for IndividualWizard's `electricity_kwh` field on /calculate.
-6. Repeat for OnboardingForm's household_size field on /onboarding
-   (org or individual flow, the second sign-in case).
 
 Net behaviour: no field ever surfaces the string "NaN" to the user.
+
+(OnboardingForm's number fields are not part of this verification —
+investigation during implementation showed they don't have the bug;
+see the amended section 2 above.)
 
 ## Out of scope
 

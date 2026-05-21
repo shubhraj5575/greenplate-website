@@ -1,7 +1,7 @@
 "use client";
 
 import { useFormContext } from "react-hook-form";
-import { cn } from "@/lib/utils";
+import { cn, emptyToNumberOrUndefined } from "@/lib/utils";
 
 interface BaseProps {
   name: string;
@@ -40,7 +40,7 @@ export function NumberField({
         step={step ?? "any"}
         min={min}
         max={max}
-        {...register(name, { valueAsNumber: true })}
+        {...register(name, { setValueAs: emptyToNumberOrUndefined })}
         className={cn(
           "w-full rounded-pill border bg-cream-50 px-4 py-2.5 text-ink-900 outline-none transition focus:border-forest-700",
           err ? "border-danger" : "border-forest-700/15",
