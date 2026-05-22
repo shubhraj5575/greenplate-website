@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/app/(auth)/onboarding/actions";
+import { ActiveLink } from "@/components/app/ActiveLink";
 
 export default async function AppLayout({
   children,
@@ -30,30 +31,18 @@ export default async function AppLayout({
           <Link href="/dashboard" className="font-display text-xl text-forest-900">
             GreenPlate
           </Link>
-          <nav className="hidden gap-6 text-sm text-ink-700 sm:flex">
-            <Link href="/dashboard" className="hover:text-forest-900">
-              Dashboard
-            </Link>
+          <nav className="hidden gap-6 text-sm sm:flex">
+            <ActiveLink href="/dashboard" exact>Dashboard</ActiveLink>
             {isOrg ? (
               <>
-                <Link href="/org/calculate" className="hover:text-forest-900">
-                  Calculate
-                </Link>
-                <Link href="/org/menu" className="hover:text-forest-900">
-                  Menu
-                </Link>
+                <ActiveLink href="/org/calculate">Calculate</ActiveLink>
+                <ActiveLink href="/org/menu">Menu</ActiveLink>
               </>
             ) : (
-              <Link href="/calculate" className="hover:text-forest-900">
-                Calculate
-              </Link>
+              <ActiveLink href="/calculate">Calculate</ActiveLink>
             )}
-            <Link href="/history" className="hover:text-forest-900">
-              History
-            </Link>
-            <Link href="/settings" className="hover:text-forest-900">
-              Settings
-            </Link>
+            <ActiveLink href="/history">History</ActiveLink>
+            <ActiveLink href="/settings">Settings</ActiveLink>
           </nav>
           <form action={signOut}>
             <button

@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useMemo } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { z } from "zod";
 import {
   individualInputsSchema,
+  calculateIndividual,
   type IndividualInputs,
 } from "@/lib/calc/individual";
 
@@ -16,7 +17,7 @@ import { FoodStep } from "./steps/FoodStep";
 import { ConsumptionStep } from "./steps/ConsumptionStep";
 import { ResultsPreview } from "./ResultsPreview";
 import { submitIndividualCalc } from "@/app/(app)/calculate/actions";
-import { cn } from "@/lib/utils";
+import { cn, formatKg } from "@/lib/utils";
 
 const STORAGE_KEY = "greenplate.calc.individual.draft";
 
@@ -97,6 +98,20 @@ export function IndividualWizard() {
     return r.success ? r.data : null;
   })();
 
+  // Mobile sticky bar: live total derived from the parsed inputs
+  const { mobileTotal, mobileTopCat } = useMemo(() => {
+    if (!previewInputs) return { mobileTotal: 0, mobileTopCat: "" };
+    try {
+      const r = calculateIndividual(previewInputs);
+      return {
+        mobileTotal: r.annualKg,
+        mobileTopCat: r.topContributors[0]?.category.replace(/_/g, " ") ?? "",
+      };
+    } catch {
+      return { mobileTotal: 0, mobileTopCat: "" };
+    }
+  }, [previewInputs]);
+
   const isLast = step === STEPS.length - 1;
   const Step = STEPS[step].Component;
 
@@ -172,7 +187,8 @@ export function IndividualWizard() {
             </p>
           )}
 
-          <div className="mt-6 flex justify-between gap-3">
+          {/* Nav buttons — add bottom padding on mobile so the sticky bar doesn't overlap */}
+          <div className="mt-6 flex justify-between gap-3 pb-20 md:pb-0">
             <button
               type="button"
               onClick={() => setStep(Math.max(0, step - 1))}
@@ -185,9 +201,31 @@ export function IndividualWizard() {
               type="button"
               onClick={onNext}
               disabled={pending}
-              className="rounded-full bg-forest-700 px-6 py-2.5 font-medium text-cream-50 transition hover:bg-forest-900 disabled:opacity-60"
+              className="inline-flex items-center gap-2 rounded-full bg-forest-700 px-6 py-2.5 font-medium text-cream-50 transition hover:bg-forest-900 disabled:opacity-60"
             >
-              {pending ? "Calculating…" : isLast ? "See my footprint" : "Next"}
+              {pending && (
+                <svg
+                  className="h-4 w-4 animate-spin"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                  />
+                </svg>
+              )}
+              {pending ? "Saving…" : isLast ? "See my footprint →" : "Next →"}
             </button>
           </div>
         </div>
@@ -200,6 +238,31 @@ export function IndividualWizard() {
             <ResultsPreview inputs={previewInputs} />
           </div>
         </aside>
+      </div>
+
+      {/* ── Mobile sticky running-total bar (hidden on md+) ── */}
+      <div
+        className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-between border-t border-forest-700/10 bg-cream-50/95 px-5 py-3 backdrop-blur-sm md:hidden"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        <div>
+          <p className="text-[10px] font-semibold tracking-[0.2em] text-forest-700 uppercase">
+            Running estimate
+          </p>
+          <p className="font-display text-xl tabular text-forest-900">
+            {formatKg(mobileTotal)}{" "}
+            <span className="text-xs font-sans font-normal text-ink-400">/ yr</span>
+          </p>
+        </div>
+        {mobileTopCat && (
+          <p className="max-w-[14ch] text-right text-xs text-ink-500">
+            Top:{" "}
+            <span className="font-medium capitalize text-ink-700">
+              {mobileTopCat}
+            </span>
+          </p>
+        )}
       </div>
     </FormProvider>
   );

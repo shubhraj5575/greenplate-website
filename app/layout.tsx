@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Fraunces } from "next/font/google";
+import { Toaster } from "sonner";
 import "./globals.css";
 
 const inter = Inter({
@@ -40,7 +41,21 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${inter.variable} ${fraunces.variable}`}>
-      <body className="min-h-full antialiased">{children}</body>
+      <body className="min-h-full antialiased">
+        {children}
+        <Toaster
+          position="top-right"
+          richColors
+          toastOptions={{
+            style: {
+              fontFamily: "var(--font-inter), system-ui, sans-serif",
+              background: "var(--color-cream-50)",
+              border: "1px solid rgba(47,92,70,0.15)",
+              color: "var(--color-ink-900)",
+            },
+          }}
+        />
+      </body>
     </html>
   );
 }
