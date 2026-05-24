@@ -15,6 +15,8 @@ import { RevealOnView } from "@/components/marketing/RevealOnView";
 import { CountUp } from "@/components/marketing/CountUp";
 import { ThaliPreview } from "@/components/marketing/ThaliPreview";
 import { JournalCards } from "@/components/marketing/JournalCards";
+import { BackedBy } from "@/components/marketing/BackedBy";
+import { Testimonials } from "@/components/marketing/Testimonials";
 
 const sources = [
   "Our World in Data",
@@ -466,6 +468,12 @@ export default function HomePage() {
 
       {/* ───────── Journal ───────── */}
       <JournalCards />
+
+      {/* ───────── Backed by ───────── */}
+      <BackedBy />
+
+      {/* ───────── Testimonials ───────── */}
+      <Testimonials />
 
       {/* ───────── FAQ ───────── */}
       <section

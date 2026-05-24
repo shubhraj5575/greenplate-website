@@ -24,8 +24,8 @@ const cols: { title: string; links: { href: string; label: string }[] }[] = [
     links: [
       { href: "/about", label: "About" },
       { href: "/blog", label: "Journal" },
-      { href: "mailto:greenplate@greenplate.online", label: "Contact" },
-      { href: "/about#careers", label: "Careers" },
+      { href: "/contact", label: "Contact" },
+      { href: "/careers", label: "Careers" },
     ],
   },
   {

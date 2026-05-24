@@ -1,3 +1,5 @@
+import { BackedBy } from "@/components/marketing/BackedBy";
+
 export const metadata = { title: "About" };
 
 export default function AboutPage() {
@@ -28,6 +30,8 @@ export default function AboutPage() {
           Solo build, India-based. Team page will fill in as we grow.
         </p>
       </section>
+
+      <BackedBy />
 
       <section className="mt-12 rounded-card border border-forest-700/10 bg-bone-100 p-8">
         <h2 className="font-display text-2xl text-forest-900">Get in touch</h2>
