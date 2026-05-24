@@ -1,13 +1,13 @@
 import type { NextRequest } from "next/server";
-import { updateSession } from "@/lib/supabase/proxy";
+import { NextResponse } from "next/server";
 
-export async function proxy(request: NextRequest) {
-  return updateSession(request);
+// DIAGNOSTIC: bare pass-through — confirms whether proxy or page functions cause ISE
+export function proxy(_request: NextRequest) {
+  return NextResponse.next();
 }
 
 export const config = {
   matcher: [
-    // Skip Next internals + static files; refresh on everything else.
     "/((?!_next/static|_next/image|favicon\\.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };
