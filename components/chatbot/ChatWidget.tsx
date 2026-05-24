@@ -56,7 +56,6 @@ export function ChatWidget() {
           <div className="flex items-center justify-between border-b border-forest-700/10 bg-forest-900 px-5 py-4">
             <div>
               <p className="font-display text-base text-cream-50">GreenPlate Assistant</p>
-              <p className="text-xs text-cream-100/70">Rule-based · LLM answers coming soon</p>
             </div>
             <button onClick={() => setOpen(false)} aria-label="Close" className="text-cream-100/70 hover:text-cream-50 transition">
               <X className="h-4 w-4" />

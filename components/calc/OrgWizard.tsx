@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import type { z } from "zod";
 import {
   orgInputsSchema,
+  menuItemSchema,
   type OrgInputs,
   calculateOrganization,
 } from "@/lib/calc/organization";
@@ -90,7 +91,22 @@ export function OrgWizard({
 
   const preview = (() => {
     const r = orgInputsSchema.safeParse(values);
-    return r.success ? calculateOrganization(r.data) : null;
+    if (r.success) return calculateOrganization(r.data);
+    try {
+      const leanValues = {
+        ...values,
+        scope3: {
+          ...values.scope3,
+          menu_items: (values.scope3?.menu_items ?? []).filter(
+            (item) => menuItemSchema.safeParse(item).success,
+          ),
+        },
+      };
+      const r2 = orgInputsSchema.safeParse(leanValues);
+      return r2.success ? calculateOrganization(r2.data) : null;
+    } catch {
+      return null;
+    }
   })();
 
   const menuArr = useFieldArray({
@@ -113,15 +129,11 @@ export function OrgWizard({
     });
   }
 
-  async function onContinue() {
+  function onContinue() {
     setError(null);
-    startTransition(async () => {
-      const ok = await methods.trigger();
-      if (!ok) return;
-      const idx = SECTIONS.findIndex(s => s.id === section);
-      const next = SECTIONS[idx + 1];
-      if (next) setSection(next.id);
-    });
+    const idx = SECTIONS.findIndex(s => s.id === section);
+    const next = SECTIONS[idx + 1];
+    if (next) setSection(next.id);
   }
 
   const isLastSection = section === "logistics";

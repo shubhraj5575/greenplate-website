@@ -95,64 +95,83 @@ export function MenuSection({
         {items.map((f, i) => {
           const kind = watch(`scope3.menu_items.${i}.kind`);
           return (
-            <div key={f.id} className="grid items-end gap-3 rounded-card border border-forest-700/10 bg-cream-50 p-4 sm:grid-cols-[1fr_140px_auto]">
+            <div key={f.id} className="rounded-card border border-forest-700/10 bg-cream-50 p-4 space-y-3">
               {kind === "ingredient" ? (
                 <>
-                  <div>
-                    <span className="mb-1 block text-xs font-medium text-ink-500 uppercase tracking-wide">Ingredient</span>
-                    <p className="rounded-pill border border-forest-700/10 bg-bone-100 px-4 py-2.5 text-sm text-ink-700">
-                      {watch(`scope3.menu_items.${i}.food_item_name`)}
-                      <span className="ml-2 text-xs text-ink-400">{watch(`scope3.menu_items.${i}.kgco2e_per_kg`)} kg CO₂e/kg</span>
-                    </p>
+                  <div className="grid gap-3 sm:grid-cols-3">
+                    <div>
+                      <span className="mb-1 block text-xs font-medium text-ink-500 uppercase tracking-wide">Ingredient</span>
+                      <p className="rounded-pill border border-forest-700/10 bg-bone-100 px-4 py-2.5 text-sm text-ink-700 truncate">
+                        {watch(`scope3.menu_items.${i}.food_item_name`)}
+                        <span className="ml-2 text-xs text-ink-400">{watch(`scope3.menu_items.${i}.kgco2e_per_kg`)} kg CO₂e/kg</span>
+                      </p>
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-xs font-medium text-ink-500 uppercase tracking-wide">Usage (kg / month)</label>
+                      <input
+                        type="number"
+                        min={0}
+                        step={0.1}
+                        {...register(`scope3.menu_items.${i}.kg_per_month`, { valueAsNumber: true })}
+                        className="w-full rounded-pill border border-forest-700/15 bg-cream-50 px-4 py-2.5 text-sm text-ink-900 outline-none transition focus:border-forest-700"
+                      />
+                    </div>
+                    <div>
+                      <span className="mb-1 block text-xs font-medium text-ink-500 uppercase tracking-wide">Total CO₂e / yr</span>
+                      <p className="rounded-pill border border-forest-700/10 bg-bone-100 px-4 py-2.5 text-sm font-medium text-ink-700">
+                        {(() => {
+                          const kg = watch(`scope3.menu_items.${i}.kg_per_month`) || 0;
+                          const factor = watch(`scope3.menu_items.${i}.kgco2e_per_kg`) || 0;
+                          return formatKg(kg * factor * 12);
+                        })()}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <label className="mb-1 block text-xs font-medium text-ink-500 uppercase tracking-wide">kg / month</label>
-                    <input
-                      type="number"
-                      min={0}
-                      step={0.1}
-                      {...register(`scope3.menu_items.${i}.kg_per_month`, { valueAsNumber: true })}
-                      className="w-full rounded-pill border border-forest-700/15 bg-cream-50 px-4 py-2.5 text-sm text-ink-900 outline-none transition focus:border-forest-700"
-                    />
-                  </div>
-                  <div className="text-right text-xs text-ink-400">
-                    {(() => {
-                      const kg = watch(`scope3.menu_items.${i}.kg_per_month`) || 0;
-                      const factor = watch(`scope3.menu_items.${i}.kgco2e_per_kg`) || 0;
-                      return formatKg(kg * factor * 12) + " / yr";
-                    })()}
+                  <div className="flex justify-end">
+                    <button
+                      type="button"
+                      onClick={() => onRemove(i)}
+                      className="text-xs text-ink-400 hover:text-red-600"
+                      aria-label="Remove"
+                    >
+                      Remove
+                    </button>
                   </div>
                 </>
               ) : (
                 <>
-                  <div>
-                    <label className="mb-1 block text-xs font-medium text-ink-500 uppercase tracking-wide">Dish</label>
-                    <input
-                      {...register(`scope3.menu_items.${i}.name`)}
-                      placeholder="e.g. Paneer Tikka"
-                      className="w-full rounded-pill border border-forest-700/15 bg-cream-50 px-4 py-2.5 text-sm text-ink-900 outline-none transition focus:border-forest-700"
-                    />
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <div>
+                      <label className="mb-1 block text-xs font-medium text-ink-500 uppercase tracking-wide">Dish</label>
+                      <input
+                        {...register(`scope3.menu_items.${i}.name`)}
+                        placeholder="e.g. Paneer Tikka"
+                        className="w-full rounded-pill border border-forest-700/15 bg-cream-50 px-4 py-2.5 text-sm text-ink-900 outline-none transition focus:border-forest-700"
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-xs font-medium text-ink-500 uppercase tracking-wide">kg CO₂e / serving</label>
+                      <input
+                        type="number"
+                        min={0}
+                        step={0.01}
+                        {...register(`scope3.menu_items.${i}.kgco2e_per_serving`, { valueAsNumber: true })}
+                        className="w-full rounded-pill border border-forest-700/15 bg-cream-50 px-4 py-2.5 text-sm text-ink-900 outline-none transition focus:border-forest-700"
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <label className="mb-1 block text-xs font-medium text-ink-500 uppercase tracking-wide">kg CO₂e / serving</label>
-                    <input
-                      type="number"
-                      min={0}
-                      step={0.01}
-                      {...register(`scope3.menu_items.${i}.kgco2e_per_serving`, { valueAsNumber: true })}
-                      className="w-full rounded-pill border border-forest-700/15 bg-cream-50 px-4 py-2.5 text-sm text-ink-900 outline-none transition focus:border-forest-700"
-                    />
+                  <div className="flex justify-end">
+                    <button
+                      type="button"
+                      onClick={() => onRemove(i)}
+                      className="text-xs text-ink-400 hover:text-red-600"
+                      aria-label="Remove"
+                    >
+                      Remove
+                    </button>
                   </div>
                 </>
               )}
-              <button
-                type="button"
-                onClick={() => onRemove(i)}
-                className="text-xs text-ink-400 hover:text-red-600"
-                aria-label="Remove"
-              >
-                Remove
-              </button>
             </div>
           );
         })}
