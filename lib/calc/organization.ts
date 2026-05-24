@@ -24,30 +24,30 @@ const DOMESTIC_FLIGHT_KM_PROXY = 1000;
 // ---------------- Inputs ----------------
 
 export const scope1Schema = z.object({
-  lpg_kg_per_month: z.number().min(0).max(50000).default(0),
-  lpg_cylinders_per_month: z.number().min(0).max(500).default(0),
-  png_m3_per_month: z.number().min(0).max(20000).default(0),
-  diesel_l_per_month: z.number().min(0).max(50000).default(0),
+  lpg_kg_per_month: z.number().min(0).max(5000000).default(0),
+  lpg_cylinders_per_month: z.number().min(0).max(50000).default(0),
+  png_m3_per_month: z.number().min(0).max(2000000).default(0),
+  diesel_l_per_month: z.number().min(0).max(5000000).default(0),
   refrigerant_type: z
     .enum(["r134a", "r410a", "r404a", "r290", "none"])
     .default("none"),
-  refrigerant_kg_per_year: z.number().min(0).max(100).default(0),
+  refrigerant_kg_per_year: z.number().min(0).max(10000).default(0),
 });
 
 export const scope2Schema = z.object({
-  electricity_kwh_per_month: z.number().min(0).max(500000),
+  electricity_kwh_per_month: z.number().min(0).max(50000000),
 });
 
 export const menuItemSchema = z.object({
   name: z.string().min(1),
-  kgco2e_per_serving: z.number().min(0).max(50),
-  monthly_servings: z.number().int().min(0).max(1_000_000),
+  kgco2e_per_serving: z.number().min(0).max(5000),
+  monthly_servings: z.number().int().min(0).max(100_000_000),
 });
 
 export const scope3Schema = z.object({
   menu_items: z.array(menuItemSchema).default([]),
-  inbound_logistics_km_per_month: z.number().min(0).max(50000).default(0),
-  food_waste_kg_per_month: z.number().min(0).max(50000).default(0),
+  inbound_logistics_km_per_month: z.number().min(0).max(5000000).default(0),
+  food_waste_kg_per_month: z.number().min(0).max(5000000).default(0),
   food_waste_disposal: z
     .enum(["landfill", "compost", "anaerobic"])
     .default("landfill"),
@@ -68,8 +68,8 @@ export const scope3Schema = z.object({
       glass: 0,
       steel_tin: 0,
     }),
-  employees: z.number().int().min(0).max(5000).default(0),
-  employee_avg_commute_km_per_day: z.number().min(0).max(500).default(0),
+  employees: z.number().int().min(0).max(500000).default(0),
+  employee_avg_commute_km_per_day: z.number().min(0).max(50000).default(0),
   employee_dominant_mode: z
     .enum(["two_wheeler", "car_petrol", "bus", "metro", "walk_cycle"])
     .default("two_wheeler"),
@@ -79,7 +79,7 @@ export const orgInputsSchema = z.object({
   scope1: scope1Schema,
   scope2: scope2Schema,
   scope3: scope3Schema,
-  seats: z.number().int().min(0).max(2000).default(0),
+  seats: z.number().int().min(0).max(200000).default(0),
 });
 
 export type OrgInputs = z.infer<typeof orgInputsSchema>;
