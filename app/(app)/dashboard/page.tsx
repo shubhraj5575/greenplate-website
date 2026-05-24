@@ -27,8 +27,8 @@ export default async function DashboardPage({
   // If ?calc=<id> is in the URL, load that specific calc (still RLS-scoped to user)
   const calcId = sp.calc;
   const calcQuery = calcId
-    ? supabase.from("calculations").select("id, calc_type, breakdown, total_kgco2e, created_at, inputs, name").eq("id", calcId).eq("user_id", user.id).maybeSingle()
-    : supabase.from("calculations").select("id, calc_type, breakdown, total_kgco2e, created_at, inputs, name").eq("user_id", user.id).order("created_at", { ascending: false }).limit(1).maybeSingle();
+    ? supabase.from("calculations").select("id, calc_type, breakdown, total_kgco2e, scope1_kgco2e, scope2_kgco2e, scope3_kgco2e, created_at, inputs, name").eq("id", calcId).eq("user_id", user.id).maybeSingle()
+    : supabase.from("calculations").select("id, calc_type, breakdown, total_kgco2e, scope1_kgco2e, scope2_kgco2e, scope3_kgco2e, created_at, inputs, name").eq("user_id", user.id).order("created_at", { ascending: false }).limit(1).maybeSingle();
 
   const { data: calc } = await calcQuery;
 
@@ -91,6 +91,16 @@ export default async function DashboardPage({
             breakdown={calc.breakdown as Record<string, number> | null}
             householdSize={profile?.household_size ?? 1}
             history={history ?? []}
+            scope1Kg={calc.scope1_kgco2e ? Number(calc.scope1_kgco2e) : undefined}
+            scope2Kg={calc.scope2_kgco2e ? Number(calc.scope2_kgco2e) : undefined}
+            scope3Kg={calc.scope3_kgco2e ? Number(calc.scope3_kgco2e) : undefined}
+            menuItems={
+              (calc.inputs as any)?.scope3?.menu_items
+                ? ((calc.inputs as any).scope3.menu_items as Array<{ name: string; kgco2e_per_serving: number; monthly_servings: number }>)
+                    .map((m) => ({ name: m.name, annualKg: m.kgco2e_per_serving * m.monthly_servings * 12 }))
+                    .sort((a, b) => b.annualKg - a.annualKg)
+                : undefined
+            }
           />
         </>
       )}

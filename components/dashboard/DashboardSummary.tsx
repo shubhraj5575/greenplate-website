@@ -49,11 +49,19 @@ export function DashboardSummary({
   breakdown,
   householdSize,
   history,
+  scope1Kg,
+  scope2Kg,
+  scope3Kg,
+  menuItems,
 }: {
   totalKg: number;
   breakdown: Record<string, number> | null;
   householdSize: number;
   history: HistoryRow[];
+  scope1Kg?: number;
+  scope2Kg?: number;
+  scope3Kg?: number;
+  menuItems?: Array<{ name: string; annualKg: number }>;
 }) {
   const equivalents = useMemo(() => computeEquivalents(totalKg), [totalKg]);
   const comparison = useMemo(() => comparisonVsIndia(totalKg), [totalKg]);
@@ -185,6 +193,57 @@ export function DashboardSummary({
           />
         </div>
       </div>
+
+      {/* Scope breakdown */}
+      {(scope1Kg !== undefined || scope2Kg !== undefined || scope3Kg !== undefined) && (
+        <div className="rounded-card border border-forest-700/10 bg-bone-100 p-6 lg:col-span-3">
+          <p className="text-xs font-medium tracking-widest text-forest-700 uppercase">Scope breakdown</p>
+          <div className="mt-4 grid grid-cols-3 gap-4">
+            {[
+              { label: "Scope 1", value: scope1Kg, desc: "Direct emissions" },
+              { label: "Scope 2", value: scope2Kg, desc: "Purchased electricity" },
+              { label: "Scope 3", value: scope3Kg, desc: "Value chain" },
+            ].map(({ label, value, desc }) => (
+              <div key={label} className="rounded-xl border border-forest-700/8 bg-cream-50 p-5">
+                <p className="text-xs font-medium tracking-widest text-forest-700 uppercase">{label}</p>
+                <p className="mt-2 font-display text-3xl tabular text-forest-900">
+                  {value !== undefined ? formatKg(value) : "—"}
+                </p>
+                <p className="mt-1 text-xs text-ink-400">{desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Menu items */}
+      {menuItems && menuItems.length > 0 && (
+        <div className="rounded-card border border-forest-700/10 bg-bone-100 p-6 lg:col-span-3">
+          <p className="text-xs font-medium tracking-widest text-forest-700 uppercase">Menu items</p>
+          <ol className="mt-4 space-y-2">
+            {menuItems.map((item, i) => (
+              <li
+                key={item.name + i}
+                className="flex items-center justify-between gap-4 border-b border-forest-700/8 pb-2 last:border-0"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-forest-700/8 text-xs font-medium text-forest-700">
+                    {i + 1}
+                  </span>
+                  <span className="text-sm text-ink-900">{item.name}</span>
+                </div>
+                <span className="tabular text-sm text-ink-700">{formatKg(item.annualKg)} / yr</span>
+              </li>
+            ))}
+          </ol>
+          <p className="mt-4 border-t border-forest-700/10 pt-3 flex items-center justify-between text-sm font-medium">
+            <span className="text-ink-700">Total menu</span>
+            <span className="tabular font-display text-lg text-forest-900">
+              {formatKg(menuItems.reduce((a, item) => a + item.annualKg, 0))} / yr
+            </span>
+          </p>
+        </div>
+      )}
     </div>
   );
 }
