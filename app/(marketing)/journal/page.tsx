@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { POSTS } from "@/app/(marketing)/blog/page";
+import { POSTS } from "@/data/posts";
 
 export const metadata = { title: "Journal" };
 

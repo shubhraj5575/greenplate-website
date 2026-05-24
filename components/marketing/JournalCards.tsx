@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { POSTS } from "@/app/(marketing)/blog/page";
+import { POSTS } from "@/data/posts";
 import { RevealOnView } from "./RevealOnView";
 
 // Rough words-per-minute → read time estimate.
