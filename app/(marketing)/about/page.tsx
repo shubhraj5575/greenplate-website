@@ -33,8 +33,8 @@ export default function AboutPage() {
         <h2 className="font-display text-2xl text-forest-900">Get in touch</h2>
         <p className="mt-3 text-ink-500">
           Questions, data corrections, partnership conversations:{" "}
-          <a className="underline" href="mailto:hello@greenplate.in">
-            hello@greenplate.in
+          <a className="underline" href="mailto:greenplate@greenplate.online">
+            greenplate@greenplate.online
           </a>
           .
         </p>

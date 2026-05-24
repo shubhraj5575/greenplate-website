@@ -1,8 +1,10 @@
 /**
- * Reduce `food_items_staging` → `food_items` by deduplicating on canonical_name.
+ * Reduce `food_items_staging` → `food_items`.
  *
- * For each canonical_name we keep ONE primary row (the highest-quality source)
- * and stash the others in `alt_sources` as a jsonb array — so we never lose data.
+ * Groups by (canonical_name, geographic_scope) so regional variants of the same
+ * food (e.g. Tomato-Haryana vs Tomato-Delhi) become separate production rows
+ * rather than being collapsed. Within each group, the highest-priority source
+ * becomes the primary row and the rest go into alt_sources.
  *
  * Priority order for choosing the primary:
  *   1. data_quality "high"
@@ -74,12 +76,12 @@ async function main() {
   const groups = new Map<string, StagingRow[]>();
   for (const r of staging) {
     if (!r.canonical_name) continue;
-    const key = r.canonical_name;
+    const key = `${r.canonical_name}||${r.geographic_scope ?? ""}`;
     const arr = groups.get(key) ?? [];
     arr.push(r);
     groups.set(key, arr);
   }
-  console.log(`  ${groups.size} unique canonical names`);
+  console.log(`  ${groups.size} unique (canonical_name, geographic_scope) pairs`);
 
   console.log("Wiping food_items …");
   await admin

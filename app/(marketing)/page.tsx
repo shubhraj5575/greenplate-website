@@ -486,10 +486,10 @@ export default function HomePage() {
             <p className="mt-6 max-w-sm text-base text-ink-500">
               Still curious? Write to us at{" "}
               <a
-                href="mailto:hello@greenplate.in"
+                href="mailto:greenplate@greenplate.online"
                 className="text-forest-900 underline decoration-forest-900/30 underline-offset-4 transition-colors hover:decoration-forest-900"
               >
-                hello@greenplate.in
+                greenplate@greenplate.online
               </a>
               .
             </p>

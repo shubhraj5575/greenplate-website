@@ -40,13 +40,6 @@ export default async function SettingsPage() {
             </>
           )}
         </dl>
-        <p className="mt-6 text-xs text-ink-400">
-          Profile editing UI ships in a follow-up build. For now, contact{" "}
-          <a href="mailto:hello@greenplate.in" className="underline">
-            hello@greenplate.in
-          </a>{" "}
-          to update.
-        </p>
       </section>
 
       <section className="mt-6 rounded-card border border-danger/30 bg-danger/5 p-6">
