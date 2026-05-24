@@ -3,6 +3,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/app/(auth)/onboarding/actions";
 import { ActiveLink } from "@/components/app/ActiveLink";
+import { ChatWidget } from "@/components/chatbot/ChatWidget";
 
 export default async function AppLayout({
   children,
@@ -55,6 +56,7 @@ export default async function AppLayout({
         </div>
       </header>
       {children}
+      <ChatWidget />
     </div>
   );
 }
