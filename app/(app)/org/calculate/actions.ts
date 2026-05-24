@@ -44,3 +44,28 @@ export async function submitOrgCalc(orgId: string, inputs: OrgInputs) {
   revalidatePath("/history");
   redirect(`/dashboard?from=${data.id}`);
 }
+
+export async function searchFoodItems(q: string): Promise<Array<{
+  id: string;
+  display_name: string;
+  category: string;
+  kgco2e_per_kg: number;
+  geographic_scope: string | null;
+}>> {
+  if (!q || q.trim().length < 2) return [];
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("food_items")
+    .select("id, display_name, category, kgco2e_per_kg, geographic_scope")
+    .ilike("display_name", `%${q.trim()}%`)
+    .eq("active", true)
+    .order("display_name")
+    .limit(20);
+  return (data ?? []).map(r => ({
+    id: r.id,
+    display_name: r.display_name,
+    category: r.category,
+    kgco2e_per_kg: Number(r.kgco2e_per_kg),
+    geographic_scope: r.geographic_scope,
+  }));
+}

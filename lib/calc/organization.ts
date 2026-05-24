@@ -38,11 +38,29 @@ export const scope2Schema = z.object({
   electricity_kwh_per_month: z.number().min(0).max(50000000),
 });
 
-export const menuItemSchema = z.object({
+export const menuItemLegacySchema = z.object({
+  kind: z.literal("legacy").default("legacy"),
   name: z.string().min(1),
   kgco2e_per_serving: z.number().min(0).max(5000),
   monthly_servings: z.number().int().min(0).max(100_000_000),
 });
+
+export const menuItemIngredientSchema = z.object({
+  kind: z.literal("ingredient"),
+  food_item_id: z.string().uuid(),
+  food_item_name: z.string().min(1),
+  kg_per_month: z.number().min(0).max(10_000_000),
+  kgco2e_per_kg: z.number().min(0).max(100),
+});
+
+export const menuItemSchema = z.discriminatedUnion("kind", [
+  menuItemLegacySchema,
+  menuItemIngredientSchema,
+]);
+
+export type MenuItem = z.infer<typeof menuItemSchema>;
+export type MenuItemLegacy = z.infer<typeof menuItemLegacySchema>;
+export type MenuItemIngredient = z.infer<typeof menuItemIngredientSchema>;
 
 export const scope3Schema = z.object({
   menu_items: z.array(menuItemSchema).default([]),
@@ -175,8 +193,10 @@ export function calculateOrganization(inputs: OrgInputs): OrgResult {
 
   // Scope 3 — menu (annual)
   const menuAnnual = scope3.menu_items.map((m) => ({
-    name: m.name,
-    annualKg: m.kgco2e_per_serving * m.monthly_servings * MONTHS_PER_YEAR,
+    name: m.kind === "ingredient" ? m.food_item_name : m.name,
+    annualKg: m.kind === "ingredient"
+      ? m.kg_per_month * m.kgco2e_per_kg * MONTHS_PER_YEAR
+      : m.kgco2e_per_serving * m.monthly_servings * MONTHS_PER_YEAR,
   }));
   const menu_ingredients = menuAnnual.reduce((a, m) => a + m.annualKg, 0);
 

@@ -16,9 +16,9 @@ const baseOrg: OrgInputs = {
   scope2: { electricity_kwh_per_month: 800 },
   scope3: {
     menu_items: [
-      { name: "Paneer Tikka", kgco2e_per_serving: 0.9, monthly_servings: 800 },
-      { name: "Masala Chai", kgco2e_per_serving: 0.12, monthly_servings: 2000 },
-      { name: "Veg Biryani", kgco2e_per_serving: 1.1, monthly_servings: 600 },
+      { kind: "legacy" as const, name: "Paneer Tikka", kgco2e_per_serving: 0.9, monthly_servings: 800 },
+      { kind: "legacy" as const, name: "Masala Chai", kgco2e_per_serving: 0.12, monthly_servings: 2000 },
+      { kind: "legacy" as const, name: "Veg Biryani", kgco2e_per_serving: 1.1, monthly_servings: 600 },
     ],
     inbound_logistics_km_per_month: 600,
     food_waste_kg_per_month: 40,

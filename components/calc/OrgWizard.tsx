@@ -15,6 +15,7 @@ import {
   SelectField,
 } from "@/components/calc/inputs/Field";
 import { submitOrgCalc } from "@/app/(app)/org/calculate/actions";
+import { MenuSection } from "@/components/calc/MenuSection";
 import { formatKg } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 
@@ -155,9 +156,19 @@ export function OrgWizard({
                 items={menuArr.fields}
                 onAdd={() =>
                   menuArr.append({
+                    kind: "legacy",
                     name: "",
                     kgco2e_per_serving: 0,
                     monthly_servings: 0,
+                  })
+                }
+                onAddIngredient={(foodItem) =>
+                  menuArr.append({
+                    kind: "ingredient",
+                    food_item_id: foodItem.id,
+                    food_item_name: foodItem.display_name,
+                    kg_per_month: 0,
+                    kgco2e_per_kg: foodItem.kgco2e_per_kg,
                   })
                 }
                 onRemove={menuArr.remove}
@@ -311,95 +322,6 @@ function Scope2Section() {
         min={0}
       />
     </div>
-  );
-}
-
-function MenuSection({
-  items,
-  onAdd,
-  onRemove,
-}: {
-  items: { id: string }[];
-  onAdd: () => void;
-  onRemove: (i: number) => void;
-}) {
-  return (
-    <div className="space-y-5">
-      <header>
-        <h3 className="font-display text-xl text-forest-900">Menu items</h3>
-        <p className="mt-1 text-sm text-ink-500">
-          Add your most-served dishes. Per-serving kg CO₂e × monthly servings
-          gives the ingredient footprint. The standalone menu builder will
-          autocomplete from our 1,500+ Indian food database once it&apos;s
-          loaded.
-        </p>
-      </header>
-      <div className="space-y-3">
-        {items.map((f, i) => (
-          <div
-            key={f.id}
-            className="grid items-end gap-3 rounded-card border border-forest-700/10 bg-cream-50 p-4 sm:grid-cols-[1fr_140px_140px_auto]"
-          >
-            <NumberFieldText
-              name={`scope3.menu_items.${i}.name`}
-              label="Dish"
-              placeholder="e.g. Paneer Tikka"
-            />
-            <NumberField
-              name={`scope3.menu_items.${i}.kgco2e_per_serving`}
-              label="kg CO₂e / serving"
-              min={0}
-              step={0.01}
-            />
-            <NumberField
-              name={`scope3.menu_items.${i}.monthly_servings`}
-              label="Servings / month"
-              min={0}
-              step={1}
-            />
-            <button
-              type="button"
-              onClick={() => onRemove(i)}
-              className="text-xs text-ink-400 hover:text-danger"
-              aria-label="Remove"
-            >
-              Remove
-            </button>
-          </div>
-        ))}
-        <button
-          type="button"
-          onClick={onAdd}
-          className="rounded-pill border border-dashed border-forest-700/30 px-4 py-2 text-sm text-forest-700 hover:bg-forest-700/5"
-        >
-          + Add menu item
-        </button>
-      </div>
-    </div>
-  );
-}
-
-// Plain text input — the Field component only does number/select/toggle
-function NumberFieldText({
-  name,
-  label,
-  placeholder,
-}: {
-  name: string;
-  label: string;
-  placeholder?: string;
-}) {
-  return (
-    <label className="block">
-      <span className="mb-1 block text-xs font-medium text-ink-500 uppercase tracking-wide">
-        {label}
-      </span>
-      <input
-        name={name}
-        placeholder={placeholder}
-        className="w-full rounded-pill border border-forest-700/15 bg-cream-50 px-4 py-2.5 text-ink-900 outline-none transition focus:border-forest-700"
-      />
-    </label>
   );
 }
 
