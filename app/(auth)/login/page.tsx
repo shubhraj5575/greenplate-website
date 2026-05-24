@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { GoogleLoginButton } from "@/components/auth/GoogleLoginButton";
+import { EmailPasswordForm } from "@/components/auth/EmailPasswordForm";
 
 export const metadata = { title: "Sign in" };
 
@@ -23,6 +24,8 @@ export default async function LoginPage({
         </p>
 
         <div className="mt-10 rounded-card border border-forest-700/10 bg-bone-100 p-6 shadow-soft">
+          <EmailPasswordForm redirectTo={sp.redirect_to} />
+          <p className="my-5 text-center text-xs text-ink-400">or</p>
           <GoogleLoginButton redirectTo={sp.redirect_to} />
           {sp.error && (
             <p className="mt-4 text-center text-xs text-danger">
