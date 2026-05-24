@@ -6,7 +6,12 @@ import { WelcomeToast } from "@/components/app/WelcomeToast";
 
 export const metadata = { title: "Dashboard" };
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ calc?: string; from?: string }>;
+}) {
+  const sp = await searchParams;
   const supabase = await createClient();
   const {
     data: { user },
@@ -19,13 +24,13 @@ export default async function DashboardPage() {
     .eq("id", user.id)
     .maybeSingle();
 
-  const { data: calc } = await supabase
-    .from("calculations")
-    .select("id, calc_type, breakdown, total_kgco2e, created_at, inputs")
-    .eq("user_id", user.id)
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+  // If ?calc=<id> is in the URL, load that specific calc (still RLS-scoped to user)
+  const calcId = sp.calc;
+  const calcQuery = calcId
+    ? supabase.from("calculations").select("id, calc_type, breakdown, total_kgco2e, created_at, inputs, name").eq("id", calcId).eq("user_id", user.id).maybeSingle()
+    : supabase.from("calculations").select("id, calc_type, breakdown, total_kgco2e, created_at, inputs, name").eq("user_id", user.id).order("created_at", { ascending: false }).limit(1).maybeSingle();
+
+  const { data: calc } = await calcQuery;
 
   const { data: history } = await supabase
     .from("calculations")
@@ -69,12 +74,25 @@ export default async function DashboardPage() {
           name={profile?.full_name ?? null}
         />
       ) : (
-        <DashboardSummary
-          totalKg={Number(calc.total_kgco2e)}
-          breakdown={calc.breakdown as Record<string, number> | null}
-          householdSize={profile?.household_size ?? 1}
-          history={history ?? []}
-        />
+        <>
+          {calcId && calc && (
+            <div className="mb-6 flex items-center justify-between gap-4 rounded-card border border-amber-500/30 bg-amber-500/8 px-5 py-3 text-sm text-ink-700">
+              <span>
+                Viewing snapshot from {new Date(calc.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "long" })}.
+                {calc.name && <span className="ml-1 font-medium">&ldquo;{calc.name}&rdquo;</span>}
+              </span>
+              <Link href="/dashboard" className="text-forest-700 underline underline-offset-4 hover:text-forest-900 shrink-0">
+                Back to latest
+              </Link>
+            </div>
+          )}
+          <DashboardSummary
+            totalKg={Number(calc.total_kgco2e)}
+            breakdown={calc.breakdown as Record<string, number> | null}
+            householdSize={profile?.household_size ?? 1}
+            history={history ?? []}
+          />
+        </>
       )}
     </main>
   );

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import { formatKg } from "@/lib/utils";
+import { HistoryRow } from "@/components/app/HistoryRow";
 
 export const metadata = { title: "History" };
 
@@ -14,7 +14,7 @@ export default async function HistoryPage() {
 
   const { data: rows } = await supabase
     .from("calculations")
-    .select("id, calc_type, total_kgco2e, created_at")
+    .select("id, calc_type, total_kgco2e, created_at, name")
     .eq("user_id", user.id)
     .order("created_at", { ascending: false });
 
@@ -51,35 +51,7 @@ export default async function HistoryPage() {
           </p>
           <ul className="mt-8 space-y-3">
             {rows.map((r, i) => (
-              <li
-                key={r.id}
-                className="flex items-center justify-between gap-4 rounded-card border border-forest-700/10 bg-cream-50 px-5 py-4 transition-all duration-200 hover:-translate-y-px hover:border-forest-700/25 hover:shadow-[var(--shadow-soft)]"
-              >
-                <div className="flex items-center gap-4">
-                  {/* Run number badge */}
-                  <span
-                    aria-hidden="true"
-                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-forest-700/8 font-display text-sm text-forest-700"
-                  >
-                    {rows.length - i}
-                  </span>
-                  <div>
-                    <p className="text-sm font-medium capitalize text-ink-900">
-                      {r.calc_type.replace(/_/g, " ")}
-                    </p>
-                    <p className="tabular text-xs text-ink-400">
-                      {new Date(r.created_at).toLocaleDateString("en-IN", {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      })}
-                    </p>
-                  </div>
-                </div>
-                <span className="tabular font-display text-xl text-forest-900">
-                  {formatKg(Number(r.total_kgco2e))}
-                </span>
-              </li>
+              <HistoryRow key={r.id} row={r} index={i} total={rows.length} />
             ))}
           </ul>
           <p className="mt-6 text-xs text-ink-400">
