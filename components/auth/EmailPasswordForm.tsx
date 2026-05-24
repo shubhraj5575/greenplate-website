@@ -21,34 +21,41 @@ export function EmailPasswordForm({ redirectTo }: Props) {
     setSuccessMessage(null);
     setLoading(true);
 
-    const supabase = createClient();
+    try {
+      const supabase = createClient();
 
-    if (mode === "signin") {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-      if (error) {
-        setError(error.message);
-        setLoading(false);
+      if (mode === "signin") {
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+        if (error) {
+          setError(error.message);
+        } else {
+          window.location.href = redirectTo || "/dashboard";
+        }
       } else {
-        window.location.href = redirectTo || "/dashboard";
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/api/auth/callback`,
+          },
+        });
+        if (error) {
+          setError(error.message);
+        } else {
+          setSuccessMessage("Check your email to confirm your account.");
+        }
       }
-    } else {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/api/auth/callback`,
-        },
-      });
-      if (error) {
-        setError(error.message);
-        setLoading(false);
-      } else {
-        setSuccessMessage("Check your email to confirm your account.");
-        setLoading(false);
-      }
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Something went wrong. Please try again.",
+      );
+    } finally {
+      setLoading(false);
     }
   }
 

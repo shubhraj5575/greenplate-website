@@ -1,9 +1,18 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import { updateSession } from "@/lib/supabase/proxy";
 
-// DIAGNOSTIC: bare pass-through — confirms whether proxy or page functions cause ISE
-export function proxy(_request: NextRequest) {
-  return NextResponse.next();
+export async function proxy(request: NextRequest) {
+  // Guard: if Supabase env vars aren't set yet, skip session logic rather than
+  // throwing a 500 on every request (was the source of the ISE in diagnostics).
+  if (
+    !process.env.NEXT_PUBLIC_SUPABASE_URL ||
+    !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  ) {
+    return NextResponse.next();
+  }
+
+  return updateSession(request);
 }
 
 export const config = {
