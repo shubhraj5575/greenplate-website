@@ -112,6 +112,19 @@ export function OrgWizard({
     });
   }
 
+  async function onContinue() {
+    setError(null);
+    startTransition(async () => {
+      const ok = await methods.trigger();
+      if (!ok) return;
+      const idx = SECTIONS.findIndex(s => s.id === section);
+      const next = SECTIONS[idx + 1];
+      if (next) setSection(next.id);
+    });
+  }
+
+  const isLastSection = section === "logistics";
+
   return (
     <FormProvider {...methods}>
       <div className="grid gap-8 md:grid-cols-[200px_1fr]">
@@ -174,7 +187,7 @@ export function OrgWizard({
             <button
               type="button"
               disabled={pending}
-              onClick={onSubmit}
+              onClick={isLastSection ? onSubmit : onContinue}
               className="inline-flex items-center gap-2 rounded-full bg-forest-700 px-6 py-2.5 font-medium text-cream-50 transition hover:bg-forest-900 disabled:opacity-60"
             >
               {pending && (
@@ -199,7 +212,7 @@ export function OrgWizard({
                   />
                 </svg>
               )}
-              {pending ? "Saving…" : "Save calculation"}
+              {pending ? "Saving…" : isLastSection ? "Save calculation" : "Save & continue"}
             </button>
           </div>
         </div>
