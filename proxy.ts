@@ -19,15 +19,17 @@ export function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
   // Optimistic check: Supabase stores the session in a cookie named
-  // sb-<projectRef>-auth-token. We check for its presence — expiry/validity
-  // is verified by supabase.auth.getUser() inside each Server Component.
+  // sb-<projectRef>-auth-token. For OAuth sessions whose payload exceeds the
+  // ~4 KB cookie limit (e.g. Google with provider tokens), @supabase/ssr
+  // splits it into sb-<ref>-auth-token.0, .1, …  Match both shapes — and
+  // exclude the PKCE verifier cookie sb-<ref>-auth-token-code-verifier.
+  // Expiry/validity is verified by supabase.auth.getUser() inside each
+  // Server Component.
   const hasSession = request.cookies
     .getAll()
     .some(
       (c) =>
-        c.name.startsWith("sb-") &&
-        c.name.endsWith("-auth-token") &&
-        c.value.length > 0,
+        /^sb-.+-auth-token(\.\d+)?$/.test(c.name) && c.value.length > 0,
     );
 
   const isProtected = PROTECTED_PREFIXES.some(
