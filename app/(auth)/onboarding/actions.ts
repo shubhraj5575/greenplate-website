@@ -41,6 +41,8 @@ export async function completeOnboarding(formData: FormData) {
   }
   const d = parsed.data;
 
+  // Upsert profile WITHOUT onboarded_at so a failed org insert doesn't
+  // permanently lock the user out of the onboarding page.
   const { error: profErr } = await supabase.from("profiles").upsert({
     id: user.id,
     account_type: d.account_type,
@@ -49,7 +51,6 @@ export async function completeOnboarding(formData: FormData) {
     state: d.state ?? null,
     household_size:
       d.account_type === "individual" ? (d.household_size ?? 1) : null,
-    onboarded_at: new Date().toISOString(),
   });
   if (profErr) return { ok: false, error: profErr.message };
 
@@ -71,6 +72,13 @@ export async function completeOnboarding(formData: FormData) {
     });
     if (orgErr) return { ok: false, error: orgErr.message };
   }
+
+  // Mark onboarded only after all steps succeeded.
+  const { error: tsErr } = await supabase
+    .from("profiles")
+    .update({ onboarded_at: new Date().toISOString() })
+    .eq("id", user.id);
+  if (tsErr) return { ok: false, error: tsErr.message };
 
   redirect("/dashboard");
 }
