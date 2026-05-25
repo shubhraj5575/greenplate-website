@@ -1,52 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
 
 export function GoogleLoginButton({ redirectTo }: { redirectTo?: string }) {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  async function signIn() {
+  function signIn() {
     setLoading(true);
-    setError(null);
-    try {
-      const supabase = createClient();
-      const origin = window.location.origin;
-      const next = redirectTo ? `?next=${encodeURIComponent(redirectTo)}` : "";
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: `${origin}/api/auth/callback${next}`,
-        },
-      });
-      if (error) {
-        setError(error.message);
-        setLoading(false);
-      }
-      // else: browser is navigating away — leave loading=true
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Google sign-in failed. Try again.",
-      );
-      setLoading(false);
-    }
+    const next = redirectTo ? `?next=${encodeURIComponent(redirectTo)}` : "";
+    window.location.href = `/api/auth/google${next}`;
   }
 
   return (
-    <div>
-      <button
-        onClick={signIn}
-        disabled={loading}
-        className="flex w-full items-center justify-center gap-3 rounded-full border border-forest-700/20 bg-cream-50 px-5 py-3 font-medium text-ink-900 transition hover:border-forest-700/40 hover:bg-cream-100 disabled:opacity-60"
-      >
-        <GoogleIcon />
-        {loading ? "Redirecting to Google…" : "Continue with Google"}
-      </button>
-      {error && (
-        <p className="mt-2 text-center text-xs text-red-600">{error}</p>
-      )}
-    </div>
+    <button
+      onClick={signIn}
+      disabled={loading}
+      className="flex w-full items-center justify-center gap-3 rounded-full border border-forest-700/20 bg-cream-50 px-5 py-3 font-medium text-ink-900 transition hover:border-forest-700/40 hover:bg-cream-100 disabled:opacity-60"
+    >
+      <GoogleIcon />
+      {loading ? "Redirecting to Google…" : "Continue with Google"}
+    </button>
   );
 }
 
